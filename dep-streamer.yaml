@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-streamer-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k8s-streamer
+  template:
+    metadata:
+      labels:
+        app: k8s-streamer
+    spec:
+      containers:
+      - name: k8s-streamer
+        image: moreirar/k8s-streamer:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 1935
+        - containerPort: 8080

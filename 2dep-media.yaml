@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k8s-streamer-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k8s-streamer
+  template:
+    metadata:
+      labels:
+        app: k8s-streamer
+    spec:
+      containers:
+      - name: k8s-streamer
+        image: moreirar/k8s-streamer:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1935
+        - containerPort: 8080
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-config-volume
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+        - name: hls-volume
+          mountPath: /tmp/hls # Certifique-se de montar o volume para o diretório /tmp/hls
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
+      - name: hls-volume
+        emptyDir: {}  # Usando emptyDir para criar o diretório temporário para HLS
+
